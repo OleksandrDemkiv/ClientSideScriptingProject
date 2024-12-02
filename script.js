@@ -49,6 +49,7 @@ async function doFetch(option) {
 async function displayCurrent(data) {
     // create output div
     const outDiv = document.getElementById("current");
+    outDiv.innerHTML = ""; // clear output div
     
     // create h3 for "City, Country"
     const h2 = document.createElement("h2");
@@ -110,7 +111,8 @@ async function displayCurrent(data) {
 
 async function displayForecast(city, country, data, days) {
     // create output div
-    const ouDtiv = document.getElementById("forecast");
+    const outDtiv = document.getElementById("forecast");
+    outDtiv.innerHTML = ""; // clear output div
 
     // create h2 for "City, Country"
     const h2 = document.createElement("h2");
@@ -163,5 +165,5 @@ async function displayForecast(city, country, data, days) {
     }
 
     // add all elements into output div
-    ouDtiv.append(h2, dataDiv);
+    outDtiv.append(h2, dataDiv);
 }
