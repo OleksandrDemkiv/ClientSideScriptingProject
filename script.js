@@ -19,14 +19,29 @@ async function doFetch(option) {
         return;
     }
 
-    // if current is selected, fetch current weather data and display it
-    if (option === "current") {
-        const data = await fetch(`https://api.weatherbit.io/v2.0/current?city=${city}&key=${API_KEY}`);
-        const json = await data.json();
-        displayCurrent(json.data[0]);
-    } // else if forecast is selected, fetch forecast weather data and display it
-    else if (option === "forecast") {
-        // const d = await fetch(`https://api.weatherbit.io/v2.0/forecast/daily?city=${city}&key=${API_KEY}&days=7`);
+    try {
+        // if current is selected, fetch current weather data and display it
+        if (option === "current") {
+                const response = await fetch(`https://api.weatherbit.io/v2.0/current?city=${city}&key=${API_KEY}`);
+                
+                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                
+                const json = await response.json();
+                displayCurrent(json.data[0]);
+        } 
+        // else if forecast is selected, fetch forecast weather data and display it
+        else if (option === "forecast") {
+            const response = await fetch(`https://api.weatherbit.io/v2.0/forecast/daily?city=${city}&key=${API_KEY}&days=7`);
+            
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+            
+            const json = await response.json();
+            displayForecast(json.city_name, json.country_code, json.data);
+        }
+    }
+    catch (error) {
+        console.error('Fetch error:', error);
+        container.innerHTML += `<p>Error: ${error.message || error}</p>`;
     }
 }
 
@@ -92,8 +107,58 @@ async function displayCurrent(data) {
     outDiv.append(h2, h3, dataDiv);
 }
 
-async function displayForecast(city) {
-    console.log(json);
+async function displayForecast(city, country, data) {
+    // create output div
+    const ouDtiv = document.getElementById("forecast");
 
-    const div = document.getElementById("forecast");
+    // create h2 for "City, Country"
+    const h2 = document.createElement("h2");
+    h2.innerHTML = `${city}, ${country}`;
+
+    // create div for all info
+    const dataDiv = document.createElement("div");
+    dataDiv.classList.add("data");
+
+    data.forEach(day => {
+        // create div for each day
+        const dayDiv = document.createElement("div");
+        dayDiv.classList.add("day");
+
+        // set size for the element (screen width / 8) to have all the elements in one row
+        // if devide by 7 it takes to much space, if devide by 9 it looks better
+        dayDiv.style.width = `${window.screen.width / 8}px`;
+
+        // create h4 for date
+        const date = document.createElement("h4");
+        date.innerHTML = day.datetime;
+        
+        // create img for icon
+        const icon = document.createElement("img");
+        icon.src = `https://cdn.weatherbit.io/static/img/icons/${day.weather.icon}.png`;
+        icon.setAttribute("alt", day.weather.description);
+
+        // create p for min and max temperature
+        const temp = document.createElement("p");
+        temp.innerHTML = `Temp: ${day.min_temp}°C - ${day.max_temp}°C`;
+
+        // create p for sunrise and sunset times
+        const sun = document.createElement("p");
+        
+        // convert sunrise and sunset timestamps to Date objects
+        const sunrise = new Date(day.sunrise_ts * 1000);
+        const sunset = new Date(day.sunset_ts * 1000);
+
+        // get time in format HH:MM
+        const sunrise_st = `${sunrise.getHours()}:${sunrise.getMinutes()}`;
+        const sunset_st = `${sunset.getHours()}:${sunset.getMinutes()}`;
+        
+        sun.innerHTML = `Sunrise: ${sunrise_st} <br/> Sunset: ${sunset_st}`;
+        
+        // append all data into day div and then into data div
+        dayDiv.append(date, icon, temp, sun);
+        dataDiv.append(dayDiv);
+    });
+
+    // add all elements into output div
+    ouDtiv.append(h2, dataDiv);
 }

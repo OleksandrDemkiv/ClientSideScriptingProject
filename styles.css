@@ -19,10 +19,19 @@ body {
     align-items: center;
 }
 
-#current .data {
+.data {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
+}
+
+#current .data {
     width: 1000px;
+}
+
+.day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
