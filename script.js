@@ -32,11 +32,12 @@ async function doFetch(option) {
         // else if forecast is selected, fetch forecast weather data and display it
         else if (option === "forecast") {
             const response = await fetch(`https://api.weatherbit.io/v2.0/forecast/daily?city=${city}&key=${API_KEY}&days=7`);
-            
+            const days = document.getElementById("days").value;
+
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             
             const json = await response.json();
-            displayForecast(json.city_name, json.country_code, json.data);
+            displayForecast(json.city_name, json.country_code, json.data, days);
         }
     }
     catch (error) {
@@ -107,7 +108,7 @@ async function displayCurrent(data) {
     outDiv.append(h2, h3, dataDiv);
 }
 
-async function displayForecast(city, country, data) {
+async function displayForecast(city, country, data, days) {
     // create output div
     const ouDtiv = document.getElementById("forecast");
 
@@ -119,7 +120,9 @@ async function displayForecast(city, country, data) {
     const dataDiv = document.createElement("div");
     dataDiv.classList.add("data");
 
-    data.forEach(day => {
+    for (let index = 0; index < days; index++) {
+        const day = data[index];
+
         // create div for each day
         const dayDiv = document.createElement("div");
         dayDiv.classList.add("day");
@@ -151,13 +154,13 @@ async function displayForecast(city, country, data) {
         // get time in format HH:MM
         const sunrise_st = `${sunrise.getHours()}:${sunrise.getMinutes()}`;
         const sunset_st = `${sunset.getHours()}:${sunset.getMinutes()}`;
-        
+        // and display
         sun.innerHTML = `Sunrise: ${sunrise_st} <br/> Sunset: ${sunset_st}`;
         
         // append all data into day div and then into data div
         dayDiv.append(date, icon, temp, sun);
         dataDiv.append(dayDiv);
-    });
+    }
 
     // add all elements into output div
     ouDtiv.append(h2, dataDiv);

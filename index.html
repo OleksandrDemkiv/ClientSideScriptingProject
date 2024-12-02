@@ -9,10 +9,22 @@
 <body>
     <label for="city">Enter city name:</label>
     <input type="text" id="city" name="city">
+    
     <button id="getCurrent">Get Current Weather</button>
     <div id="current"></div>
-    <button id="getForecast">Get 7-day forecast</button>
+    
+    <button id="getForecast">Get forecast</button>
+    <select name="days" id="days">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+    </select> 
     <div id="forecast"></div>
+    
     <script src="script.js"></script>
 </body>
 </html>
