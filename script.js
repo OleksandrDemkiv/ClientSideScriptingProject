@@ -130,7 +130,7 @@ async function displayForecast(city, country, data, days) {
         dayDiv.classList.add("day");
 
         // set size for the element (screen width / 8) to have all the elements in one row
-        // if devide by 7 it takes to much space, if devide by 9 it looks better
+        // if devide by 7 it takes to much space, if devide by 8 it looks better
         dayDiv.style.width = `${window.screen.width / 8}px`;
 
         // create h4 for date
